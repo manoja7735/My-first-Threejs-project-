@@ -19,7 +19,7 @@ document.body.appendChild(renderer.domElement);
 // Orbit Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-// controls.autoRotate = true;
+controls.autoRotate = true;
 
 // Plane Geometry
 const planeGeometry = new THREE.PlaneGeometry(100, 100);
@@ -50,8 +50,8 @@ scene.add(cube);
 // Animate Function 
 function animate() {
     requestAnimationFrame(animate);
-    // cube.rotation.x += 0.5;
-    // plane.rotation.z += 10;
+     cube.rotation.x += 0.5;
+     plane.rotation.z += 10;
     controls.update(); // Update OrbitControls
     renderer.render(scene, camera);
 }
