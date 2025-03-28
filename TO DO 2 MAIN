@@ -1,0 +1,878 @@
+import * as THREE from 'three';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+// creating a scene 
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+
+// camera 
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 4000);
+camera.position.set(0, 0, 500);
+
+
+// renderer 
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+
+// orbit controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+function task1() {
+    clearScene();
+
+    // Plane Geometry
+    const planeGeometry = new THREE.PlaneGeometry(100, 100);
+    const planematerial = new THREE.MeshBasicMaterial({
+        color: 0x006400,
+        side: THREE.DoubleSide
+    });
+    const plane = new THREE.Mesh(planeGeometry, planematerial);
+    plane.rotateX(-Math.PI / 2);
+    scene.add(plane);
+
+
+    // Box Geometry
+    const boxWidth = 10, boxHeight = 10, boxDepth = 10;
+    const boxGeometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+    const material = new THREE.MeshBasicMaterial({
+        color: 0x116ffc
+    });
+
+    const cube = new THREE.Mesh(boxGeometry, material);
+    cube.position.y = 10;
+    scene.add(cube);
+
+}
+
+function task2() {
+    clearScene();
+    function getGeometry(geometry) {
+        let Geometry;
+        switch (geometry) {
+
+            case "Plane":
+                Geometry = new THREE.PlaneGeometry(200, 200);
+                break;
+            case "Box":
+                let height = 10, width = 10, depth = 10;
+                Geometry = new THREE.BoxGeometry(width, height, depth);
+                break;
+            case "Capsule":
+                Geometry = new THREE.CapsuleGeometry(10, 15, 32, 32);
+                break;
+            case "Sphere":
+                Geometry = new THREE.SphereGeometry(15, 32, 32);
+                break;
+            case "Cone":
+                Geometry = new THREE.ConeGeometry(5, 20, 32);
+                break;
+            case "Cylinder":
+                Geometry = new THREE.CylinderGeometry(15, 32, 32);
+                break;
+            case "Dodecahedron":
+                Geometry = new THREE.DodecahedronGeometry(10, 5);
+                break;
+            case "Ring":
+                Geometry = new THREE.RingGeometry(1, 5, 32);
+                break;
+            case "Tetrahedron":
+                Geometry = new THREE.TetrahedronGeometry(10, 0);
+                break;
+            case "Torus":
+                Geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+                break;
+            case "TorusKnot":
+                Geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+                break;
+            default:
+                console.log("Enter Valid input as Geometry name ");
+                return null;
+
+        }
+
+        return Geometry;
+    }
+
+    // creating function for material
+    function getMaterial(material) {
+        let selectedMaterial;
+
+        switch (material) {
+            case "LineBasic":
+                selectedMaterial = new THREE.LineBasicMaterial({
+                    color: 0xffffff,
+                    linewidth: 1
+                });
+                break;
+            case "LineDashed":
+                selectedMaterial = new THREE.LineDashedMaterial({
+                    color: 0xffffff,
+                    linewidth: 1,
+                    scale: 1,
+                    dashSize: 3,
+                    gapSize: 1,
+                });
+                break;
+            case "MeshBasic":
+                selectedMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xffffff
+                });
+                break;
+            case "MeshDepth":
+                selectedMaterial = new THREE.MeshDepthMaterial(); // No color property
+                break;
+            case "MeshDistance":
+                selectedMaterial = new THREE.MeshDistanceMaterial();
+                break;
+            case "MeshLambert":
+                selectedMaterial = new THREE.MeshLambertMaterial({
+                    color: 0xffffff
+                });
+                break;
+            case "MeshMatcap":
+                selectedMaterial = new THREE.MeshMatcapMaterial({
+                    color: 0xffffff
+                });
+                break;
+            case "MeshNormal":
+                selectedMaterial = new THREE.MeshNormalMaterial();
+                break;
+            case "MeshPhong":
+                selectedMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xffffff
+                });
+                break;
+            case "MeshPhysical":
+                selectedMaterial = new THREE.MeshPhysicalMaterial({
+                    color: 0xffffff
+                });
+                break;
+            case "MeshStandard":
+                selectedMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xffffff
+                });
+                break;
+            case "MeshToon":
+                selectedMaterial = new THREE.MeshToonMaterial({
+                    color: 0xffffff
+                });
+                break;
+            case "Points":
+                selectedMaterial = new THREE.PointsMaterial({
+                    color: 0xffffff
+                });
+                break;
+            default:
+                console.log("Enter a valid material name / No such material available");
+                return null;
+        }
+
+        return selectedMaterial;
+    }
+
+    // adding light function
+    function getLight(lightType, scene) {
+        let selectedLight;
+
+        switch (lightType) {
+            case "Ambient":
+                selectedLight = new THREE.AmbientLight(0x404040);
+                break;
+            case "Directional":
+                selectedLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                break;
+            case "Hemisphere":
+                selectedLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
+                break;
+            case "Point":
+                selectedLight = new THREE.PointLight(0xff0000, 1, 100);
+                selectedLight.position.set(50, 50, 50);
+                break;
+            case "Spot":
+                selectedLight = new THREE.SpotLight(0xffffff);
+                selectedLight.position.set(100, 1000, 100);
+                break;
+            default:
+                console.log("Invalid light type. Try a valid one.");
+                return null;
+        }
+
+
+        if (selectedLight) {
+            scene.add(selectedLight);
+        }
+
+        return selectedLight;
+    }
+
+    function first() {
+        const cube = new THREE.Mesh(getGeometry("Box"), getMaterial("MeshBasic"));
+        scene.add(cube);
+        getLight(AmbientLight);
+    }
+    first();
+}
+
+function task3() {
+    clearScene();
+    // adding light 
+    const amblight = new THREE.AmbientLight(0xffffff, 2);
+    scene.add(amblight);
+
+    const w = 2000, h = 1000;
+
+    const recShape = new THREE.Shape();
+
+    recShape.moveTo(-w / 2, -h / 2);
+    recShape.lineTo(w / 2, -h / 2);
+    recShape.lineTo(w / 2, h / 2);
+    recShape.lineTo(-w / 2, h / 2);
+    recShape.closePath();
+
+
+    // Function to create a hole
+    function createHole(x, y, radius) {
+        const holePath = new THREE.Path();
+        holePath.absarc(x, y, 50, 0, Math.PI * 2, false);
+        return holePath;
+    }
+
+    //Adding holes correctly
+    recShape.holes.push(createHole(w / 4, h / 4, 50));
+    recShape.holes.push(createHole(0, h / 4, 50));
+    recShape.holes.push(createHole(-w / 4, h / 4, 50));
+    recShape.holes.push(createHole(-w / 4, -h / 4, 50));
+    recShape.holes.push(createHole(0, -h / 4, 50));
+    recShape.holes.push(createHole(w / 4, -h / 4, 50));
+
+    const extrudeSettings = {
+        depth: 2,
+        bevelEnabled: false
+    };
+
+    const recgeometry = new THREE.ExtrudeGeometry(recShape, extrudeSettings);
+
+    const recmesh = new THREE.Mesh(recgeometry, new THREE.MeshStandardMaterial({
+        color: 0xfe00ff,
+        side: THREE.DoubleSide,
+        wireframe: false,
+        metalness: 0.5,
+        roughness: 0.6,
+    }));
+    scene.add(recmesh);
+
+}
+
+function task4() {
+    clearScene();
+    // Lighting
+   /* const light = new THREE.AmbientLight(0xffffff, 2);
+    scene.add(light);
+
+
+    // shape 
+    const width = 100, height = 200;
+    const shape = new THREE.Shape();
+    shape.moveTo(-width / 2, -height / 2);
+    shape.lineTo(width / 2, -height / 2);
+    shape.lineTo(width / 2, height / 2);
+    shape.lineTo(-width / 2, height / 2);
+    shape.lineTo(-width / 2, -height / 2);
+
+    //extrusion path
+    const path = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(50, 100, 0),
+        new THREE.Vector3(100, 0, 0),
+        new THREE.Vector3(900, 0, 0),
+        new THREE.Vector3(950, 100, 0),
+        new THREE.Vector3(1000, 0, 0)
+    ]);
+
+    // Extrude settings
+    const extrudeSettings = {
+        bevelEnabled: false,
+        extrudePath: path
+    };
+
+    // extruded geometry
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    const material = new THREE.MeshStandardMaterial({ color: "red", side: THREE.DoubleSide, wireframe: false });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    // edges light
+    const edges = new THREE.EdgesGeometry(geometry);
+    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+    const edgeMesh = new THREE.LineSegments(edges, edgeMaterial);
+    scene.add(edgeMesh);
+    */
+
+    const light = new THREE.AmbientLight(0xffffff, 2);
+    scene.add(light);
+
+    // shape 
+    const width = 300, height = 50;
+    const shape = new THREE.Shape();
+    shape.moveTo(-width / 2, -height / 2);
+    shape.lineTo(width / 2, -height / 2);
+    shape.lineTo(width / 2, height / 2);
+    shape.lineTo(-width / 2, height / 2);
+    shape.lineTo(-width / 2, -height / 2);
+
+
+    const path = new THREE.CatmullRomCurve3([
+        // new THREE.Vector3(0, 0, 0),
+        // new THREE.Vector3(50, 100, 0),
+        // new THREE.Vector3(100, 0, 0),
+        // new THREE.Vector3(900, 0, 0),
+        // new THREE.Vector3(950, 100, 0),
+        // new THREE.Vector3(1000, 0, 0)
+    ]);
+
+    const extrudeSettings = {
+        depth:40,
+        bevelEnabled: false,
+        // extrudePath: path
+    };
+
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    const material = new THREE.MeshStandardMaterial({ color: "red", side: THREE.DoubleSide, wireframe: false });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+}
+// creating a shape task 
+function task5(){
+     // clearScene();
+        // Lighting
+        const light = new THREE.AmbientLight(0xffffff, 2);
+        scene.add(light);
+    
+        const axesHelper = new THREE.AxesHelper( 500);
+         scene.add( axesHelper );
+    
+        // shape 
+        const width = 10, height = 10;
+        const angle = 45;
+        const l= height/Math.tan(angle);
+        const origin = new THREE.Vector2(0,0);
+        const shape = new THREE.Shape();
+        shape.moveTo(-width / 2 + origin.x, -height / 2 + origin.y);
+        shape.lineTo(origin.x, -height/2 + origin.y);
+        shape.lineTo(origin.x, -height + origin.y);
+        shape.lineTo(width/4 + origin.x, -height + origin.y );
+        shape.lineTo(width/4 + origin.x, -height/2 + origin.y);
+        shape.lineTo(width / 2 + origin.x, -height / 2 + origin.y);
+        shape.lineTo(width / 2 + origin.x, origin.y);
+        shape.lineTo(width + origin.x, origin.y);
+        shape.lineTo(width + origin.x, height/4 + origin.y);
+        shape.lineTo(width/2 + origin.x, height/4 + origin.y);
+        shape.lineTo(width / 2 + origin.x, height / 2 + origin.y);
+        shape.lineTo(origin.x, height/2 + origin.y);
+        shape.lineTo(origin.x, height + origin.y);
+        shape.lineTo(origin.x - width/4 , origin.y + height);
+        shape.lineTo(origin.x - width/4 , origin.y + height/2);
+        shape.lineTo(-width / 2 + origin.x, height / 2 + origin.y);
+        shape.lineTo(-width/2 + origin.x , origin.y);
+        shape.lineTo(-width + origin.x , origin.y);
+        shape.lineTo(-width + origin.x , origin.y - height/4);
+        shape.lineTo(-width/2 + origin.x , origin.y - height/4);
+        shape.lineTo(-width / 2 + origin.x, -height / 2 + origin.y);
+    
+        // const shape = new THREE.Shape();
+        // shape.moveTo(0, 0);
+        // shape.lineTo(width, 0);
+        // shape.lineTo(width-200, height);
+        // shape.lineTo(200, height );
+        // shape.lineTo(0, 0);
+    
+       
+        //extrusion path
+        let w=25;
+        // function axis(value){
+        //     let pathvalue;
+        //     if(value =="x"){
+        //         pathvalue = new THREE.CatmullRomCurve3([
+        //             new THREE.Vector3(0, 0, 0),
+        //             new THREE.Vector3(w, 0, 0),
+        //             new THREE.Vector3(w*2, 0, 0)
+        //         ]);
+        //     }else if(value == "y"){
+        //         pathvalue = new THREE.CatmullRomCurve3([
+        //             new THREE.Vector3(0, 0, 0),
+        //             new THREE.Vector3(0, w, 0),
+        //             new THREE.Vector3(0, w*2, 0)
+        //         ]);
+        //     }else{
+        //         pathvalue = new THREE.CatmullRomCurve3([
+        //             new THREE.Vector3(0, 0, 0),
+        //             new THREE.Vector3(w, w, 0),
+        //             new THREE.Vector3(w*2, w*2, 0)
+        //         ]);   
+        //     }
+        //     return pathvalue;
+    
+        // }
+        // const path = new THREE.CatmullRomCurve3([
+        //     new THREE.Vector3(0, 0, 0),
+        //     new THREE.Vector3(5, 5, 0),
+        //     new THREE.Vector3(10, 10, 0),
+        //     new THREE.Vector3(20, 0, 0),
+        //     new THREE.Vector3(30, 0, 0),
+        //     new THREE.Vector3(50, 0, 0)
+        // ]);
+    
+    let startPoint =new THREE.Vector3( 0, 0, 0 );
+    let endPoint = new THREE.Vector3( w*2, 0,  0);
+    const curve = new THREE.LineCurve3(startPoint, endPoint);
+    
+    
+    /*
+    // Buffer Geometry used here 
+    let curve2 = new THREE.CurvePath();
+    let point2Ds = shape.getPoints();
+     console.log(point2Ds);
+     console.log(curve.getPoints());
+     let pointA
+     let pointB
+     for(let i = 0;i<point2Ds.length;i++){
+         pointA = point2Ds[i]
+         pointB = point2Ds[i+1]|| pointA
+         curve2.add(new THREE.LineCurve3(
+             new THREE.Vector3(pointA.x,pointA.y,0),
+             new THREE.Vector3(pointB.x,pointB.y,0)
+         ));
+     }
+     let BufferGeometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints())
+     let outline  = new THREE.Line(BufferGeometry,new THREE.LineBasicMaterial({
+        color: 0x0000ff
+    }));
+     scene.add(outline)
+    BufferGeometry.set()
+    */
+        // const cut1 =0.7;
+        // const cutDistance1 = curve.getLengths()[Math.floor(cut1 * curve.arcLengthDivisions)];
+        // console.log(cutDistance1 );
+    
+        // const cutT1 = curve.getUtoTmapping(cut1, cutDistance1);
+        // console.log(cutT1);
+        // const cutPoint1 = curve.getPoint(cutT1);
+        // console.log(cutPoint1);
+    
+        
+        // const curve = new THREE.CubicBezierCurve(
+        //     new THREE.Vector2( -10, 0 ),
+        //     new THREE.Vector2( -5, 15 ),
+        //     new THREE.Vector2( 20, 15 ),
+        //     new THREE.Vector2( 10, 0 )
+        // );
+        
+         // Extrude settings
+        //  const extrudeSettings = {
+        //     steps: 10,
+        //     bevelEnabled: false,
+        //     extrudePath: curve
+        // };
+        // const points = curve.getPoints( 50 );
+        // const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        
+        // const material = new THREE.MeshBasicMaterial( { color: 0xff0000, side: THREE.DoubleSide, wireframe: false } );
+        
+        // // Create the final object to add to the scene
+        // const curveMesh = new THREE.Mesh( geometry, material );
+        // scene.add(curveMesh);
+    
+    
+        // Extrude settings
+        const extrudeSettings = {
+            bevelEnabled: false,
+            // extrudePath: axis("x")
+            extrudePath: curve
+        };
+    
+        // extruded geometry
+        const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        const material = new THREE.MeshStandardMaterial({ color: "red", side: THREE.DoubleSide, wireframe: false});
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+    
+    
+        var vertex = new THREE.Vector3();
+        var positionAttribute =  geometry.attributes.position;
+        console.log(positionAttribute);
+        var i = geometry.index;
+        for (  i = 0; i < positionAttribute.count; i++) {
+            
+            const l= (positionAttribute.getY(i));
+            const d= positionAttribute.getX(i)
+    
+            vertex.fromBufferAttribute( positionAttribute, i );
+            console.log("x: ",positionAttribute.getX(i));
+            console.log("Y: ",positionAttribute.getY(i));
+            console.log("z: ",positionAttribute.getZ(i));
+        
+           if(vertex.x ==0){
+            vertex.x = vertex.x+l;
+           }else if(vertex.x == width/4){
+            vertex.x = vertex.x-l;
+           }else if(vertex.x == -width/4){
+            vertex.x = vertex.x+l;
+           }else if(vertex.x == -width/2){
+            vertex.x = vertex.x+l;
+           }else if(vertex.x == width/2){
+            vertex.x = vertex.x-l;
+           }else if(vertex.x==w*2){
+            vertex.x = vertex.x-l;
+           }
+        //    
+            // if(vertex.x ==w*2 && vertex.y==width / 2 && vertex.z ==height / 2){
+            //     vertex.x = vertex.x-l
+            //     vertex.y = vertex.y
+            //     vertex.z= vertex.z
+            // }else if(vertex.x ==w*2 && vertex.y==width / 2 && vertex.z ==-height / 2){
+            //     vertex.x = vertex.x-l
+            //     vertex.y = vertex.y
+            //     vertex.z= vertex.z   
+            // }else if(vertex.x ==0 && vertex.y==width / 2 && vertex.z ==height / 2){
+            //     vertex.x = vertex.x+l
+            //     vertex.y = vertex.y
+            //     vertex.z= vertex.z
+            // }else if(vertex.x ==0 && vertex.y==width / 2 && vertex.z ==-height / 2){
+            //     vertex.x = vertex.x+l
+            //     vertex.y = vertex.y
+            //     vertex.z= vertex.z   
+            // }
+            
+           
+            positionAttribute.setXYZ(i,vertex.x, vertex.y, vertex.z);
+             
+        
+        }
+        
+    
+        /*
+        function twist(geometry, factor) {
+            const q = new THREE.Quaternion()
+            const up = new THREE.Vector3(0, 1, 0)
+            const p = geometry.attributes.position.array
+    
+            for (let i = 0; i < p.length; i += 3) {
+                q.setFromAxisAngle(up, p[i + 1] - factor)
+    
+                let vec = new THREE.Vector3(p[i], p[i + 1], p[i + 2])
+                vec.applyQuaternion(q)
+    
+                p[i] = vec.x+l
+                p[i + 2] = vec.z+l
+            }
+    
+            geometry.computeVertexNormals()
+            geometry.attributes.position.needsUpdate = true
+        }
+        twist(geometry, Math.PI /10)
+        */
+        /*
+        const pa = geometry.attributes.position.array;
+        console.log(pa);
+        const indices = geometry.index;
+        console.log('Indices:', indices);
+    
+        for (let i = 0; i < pa.count; i++) {
+            // Get the current vertex position
+            const x = positionAttribute.getX(i)
+            console.log(x) ;
+            const y = positionAttribute.getY(i);
+            const z = positionAttribute.getZ(i);
+          
+            // Set new positions (for example, move all vertices up by 1 unit)
+            positionAttribute.setXYZ(i, x, y , z);
+          }
+            */
+    
+        // const bGeometry = new THREE.BufferGeometry();
+        // const vertices = new Float32Array([
+        // -1.0, -1.0,  1.0, // v0
+        //  1.0, -1.0,  1.0, // v1
+        //  1.0,  1.0,  1.0, // v2
+        // -1.0,  1.0,  1.0, // v3
+        // ]);
+        // bGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        // bGeometry.clone();
+        // console.log(bGeometry.drawRange(0,2));
+        // const boundingSphere = bGeometry.boundingSphere;
+        // console.log(boundingSphere.center, boundingSphere.radius);
+        // console.log(boundingBox.min, boundingBox.max);
+    
+        // edges light
+        const edges = new THREE.EdgesGeometry(geometry);
+        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+        const edgeMesh = new THREE.LineSegments(edges, edgeMaterial);
+        scene.add(edgeMesh);
+    
+    }
+    
+    
+// cutting the shape task 
+    function task6(){
+    
+         const light = new THREE.AmbientLight(0xffffff, 2);
+            scene.add(light);
+        
+            const axesHelper = new THREE.AxesHelper( 50);
+             scene.add( axesHelper );
+    
+            const width = 500, height = 600;
+            const w=60, m=15;
+                const origin = new THREE.Vector2(0,0);
+                const shape = new THREE.Shape();
+               
+                //1 
+                shape.moveTo(origin.x+m, origin.y);
+                shape.lineTo(origin.x+width-m,  origin.y);
+                shape.bezierCurveTo(origin.x+width-m,  origin.y,origin.x+width,  origin.y,origin.x+width,  origin.y+m );
+                //2 
+                shape.lineTo(origin.x+width,  origin.y+height/3-m);
+                shape.bezierCurveTo(origin.x+width,  origin.y+height/3-m, origin.x+width-w/2,  origin.y+height/3,origin.x+width-w,  origin.y+height/3-m); // add other curve here 
+                // // // 3
+                
+                shape.lineTo(origin.x+width-w,  origin.y+w+m);
+                shape.bezierCurveTo(origin.x+width-w,  origin.y+w+m, origin.x+width-w,  origin.y+w,origin.x+width-w-m,  origin.y+w );
+                // //4
+                 shape.lineTo(origin.x+w+m,  origin.y+w);
+                 shape.bezierCurveTo(origin.x+w+m,  origin.y+w, origin.x+w,  origin.y+w,origin.x+w,  origin.y+w+m );
+                
+                //  shape.lineTo(origin.x+w,  origin.y+height-w-m);
+                shape.lineTo(origin.x+w,  origin.y+2*height/3);
+                //  shape.bezierCurveTo(origin.x+w,  origin.y+height-w-m, origin.x+w,  origin.y+height-w,origin.x+w+m,  origin.y+height-w );
+                 shape.bezierCurveTo(origin.x+w,  origin.y+2*height/3, origin.x+width/4,  origin.y+height-w,origin.x+width/2-w,  origin.y+2*height/3+m );
+    
+                //  shape.lineTo(origin.x+width/2-w-m,  origin.y+height-w); // original
+                //  shape.bezierCurveTo(origin.x+width/2-w-m,  origin.y+height-w, origin.x+width/2-w,  origin.y+height-w,origin.x+width/2-w,  origin.y+height-w-m );
+    
+                //  shape.lineTo(origin.x+width/2-w,  origin.y+2*height/3+m); // edited
+                 shape.bezierCurveTo(origin.x+width/2-w,  origin.y+2*height/3+m, origin.x+width/2-w/2,  origin.y+2*height/3,origin.x+width/2,  origin.y+2*height/3+m );
+    
+                //  shape.lineTo(origin.x+width/2,  origin.y+height-m);
+                //  shape.bezierCurveTo(origin.x+width/2,  origin.y+height-m, origin.x+width/2,  origin.y+height,origin.x+width/2- m,  origin.y+height);
+                shape.lineTo(origin.x+width/2,  origin.y+height-w);
+                shape.bezierCurveTo(origin.x+width/2,  origin.y+height-w, origin.x+width/4,  origin.y+height,origin.x,  origin.y+height-w);
+    
+                //  shape.lineTo(origin.x+m,  origin.y+height);
+                //  shape.bezierCurveTo(origin.x+m,  origin.y+height, origin.x,  origin.y+height,origin.x,  origin.y+height-m);
+    
+                //  shape.lineTo(origin.x,  origin.y+m);
+                //  shape.bezierCurveTo(origin.x,  origin.y+m, origin.x,  origin.y,origin.x+m,  origin.y);
+    
+            
+                // creating the hole
+                const radius =15;
+                function createHole(x, y, radius) {
+                        const holePath = new THREE.Path();
+                        holePath.absarc(x, y, radius, 0, Math.PI * 2, false);
+                        return holePath;
+                    }
+    
+                    shape.holes.push(createHole(width-w/2, height/3-w/2, radius));
+                    shape.holes.push(createHole(width/2-w/2, 2*height/3+w/2, radius));
+                
+                let l=50
+                let startPoint =new THREE.Vector3( 0, 0, 0 );
+                let endPoint = new THREE.Vector3( l, 0,  0);
+                const curve = new THREE.LineCurve3(startPoint, endPoint);
+                const extrudeSettings = {
+                    depth:30,
+                    bevelEnabled: false,
+                    
+                };
+                 const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                    const material = new THREE.MeshStandardMaterial({ color: "red", side: THREE.DoubleSide, wireframe: false});
+                    const mesh = new THREE.Mesh(geometry, material);
+                    scene.add(mesh);
+    
+                     const edges = new THREE.EdgesGeometry(geometry);
+                        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+                        const edgeMesh = new THREE.LineSegments(edges, edgeMaterial);
+                        scene.add(edgeMesh);
+    
+}
+
+// creating a shape on 1st day task
+function task7(){
+    const light = new THREE.AmbientLight(0xffffff, 2);
+            scene.add(light);
+        
+            const axesHelper = new THREE.AxesHelper( 50);
+             scene.add( axesHelper );
+    
+            const width = 900, height = 900;
+            const w=60, m=15;
+                const origin = new THREE.Vector2(0,0);
+                const shape = new THREE.Shape();
+               
+                // //1 
+                shape.moveTo(origin.x+m, origin.y);
+                shape.lineTo(origin.x+width-m,  origin.y);
+                shape.bezierCurveTo(origin.x+width-m,  origin.y,origin.x+width,  origin.y,origin.x+width,  origin.y+m );
+                shape.lineTo(origin.x+width,  origin.y+height/3-w/2);
+                shape.absarc(origin.x+width-w/2, origin.y+height/3- w/2, w/2, 0, Math.PI);
+                shape.lineTo(origin.x+width-w, origin.y+w+m);
+                shape.bezierCurveTo(origin.x+width-w, origin.y+w+m, origin.x+width-w, origin.y+w, origin.x+width-w-m, origin.y+w);
+                shape.lineTo(origin.x+w+m, origin.y+w);
+                shape.bezierCurveTo(origin.x+w+m, origin.y+w, origin.x+w, origin.y+w, origin.x+w, origin.y+w+m);
+                shape.lineTo( origin.x+w, origin.y+2*height/3);
+    
+                shape.absarc(origin.x+width/4, origin.y+2*height/3+w/2,height/3-w-w/2, Math.PI,0, true);
+    
+                shape.absarc(origin.x+width/2-w/2, origin.y+2*height/3+w/2,w/2, Math.PI, Math.PI*2);
+    
+                shape.absarc(origin.x+width/4, origin.y+2*height/3+w/2,height/3-w/2, 0, Math.PI);
+    
+                shape.lineTo(origin.x, origin.y+m);
+                shape.bezierCurveTo(origin.x, origin.y+m, origin.x, origin.y, origin.x+m, origin.y);
+            
+                // creating the hole
+                const radius =15;
+                function createHole(x, y, radius) {
+                        const holePath = new THREE.Path();
+                        holePath.absarc(x, y, radius, 0, Math.PI * 2, false);
+                        return holePath;
+                    }
+    
+                    shape.holes.push(createHole(width-w/2, height/3-w/2, radius));
+                    shape.holes.push(createHole(width/2-w/2-5, 2*height/3+w/2-15, radius));
+                
+                
+                const extrudeSettings = {
+                    depth:30,
+                    bevelEnabled: false,
+    
+                    
+                };
+                 const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                    const material = new THREE.MeshStandardMaterial({ color: "red", side: THREE.DoubleSide, wireframe: false});
+                    const mesh = new THREE.Mesh(geometry, material);
+                    scene.add(mesh);
+    
+                     const edges = new THREE.EdgesGeometry(geometry);
+                        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+                        const edgeMesh = new THREE.LineSegments(edges, edgeMaterial);
+                        scene.add(edgeMesh);
+                    
+}
+
+// creating a shape on 2nd day task
+function task8(){
+     const light = new THREE.AmbientLight(0xffffff, 2);
+         scene.add(light);
+            
+    
+        let width = 300, height = 300; // these are not to change only change the new width and height value
+    
+        let newWidth =54, newHeight = 56; // change the value to accurate as your choice 
+    
+        const w=18, m=15;
+        if(newWidth<=w*3){
+            width = width
+        }else{
+            width = newWidth;
+        }
+        if(newHeight <= 3*w){
+            height= height;
+        }else{
+            height= newHeight;
+        }
+        const origin = new THREE.Vector2(-100,-100);
+        const shape = new THREE.Shape();
+    
+        shape.moveTo(origin.x+width, origin.y+w/2); //origin 
+        shape.lineTo(origin.x+width, origin.y+height-w-m); // next step goes along y-axis(+ve)
+        shape.bezierCurveTo(origin.x+width,origin.y+height-w-m, origin.x+width, origin.y+height-w/2, origin.x+width-m,origin.y+height-w/2); // next the bezierCurve is added
+        shape.lineTo(origin.x+3*w/2, origin.y+height-w/2); // line along x axis direction towards y-axis  
+        shape.absarc(origin.x+w, origin.y+height-w/2, w/2, 0, Math.PI);
+        shape.absarc(origin.x+w/2, origin.y+height-w, w/2, Math.PI/2, 3*Math.PI/2);
+        shape.absarc(origin.x+w, origin.y+height-3*w/2, w/2, Math.PI, 2*Math.PI);
+        shape.lineTo(origin.x+width-w-m, origin.y+height-3*w/2);
+        shape.bezierCurveTo(origin.x+width-w-m,origin.y+height-3*w/2, origin.x+width-w, origin.y+height-3*w/2, origin.x+width-w,origin.y+height-3*w/2-m);
+        shape.lineTo(origin.x+width-w, origin.y+w/2);
+        shape.absarc(origin.x+width-w/2, origin.y+w/2, w/2, Math.PI, 2*Math.PI);
+    
+        
+        let diameter =50;
+        if(diameter>=w){
+            diameter =w;
+        }
+        function createHole(x, y, radius) {
+            const holePath = new THREE.Path();
+            holePath.absarc(x, y, radius, 0, Math.PI * 2, false);
+            return holePath;
+        }
+    
+        shape.holes.push(createHole(origin.x+w, origin.y+height-w, diameter/2));
+    
+    
+        const extrudeSettings = {
+            depth:30,
+            bevelEnabled: false,
+    
+            
+        };
+    
+         const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+         const material = new THREE.MeshStandardMaterial({ color: "red", side: THREE.DoubleSide, wireframe: false});
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+        
+        const edges = new THREE.EdgesGeometry(geometry);
+        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+        const edgeMesh = new THREE.LineSegments(edges, edgeMaterial);
+        scene.add(edgeMesh);
+        
+}
+
+
+
+  
+
+function clearScene() {
+    while (scene.children.length > 0) {
+        scene.remove(scene.children[0]);
+    }
+}
+
+
+window.addEventListener("keyup", (event) => {
+
+    controls.update();
+
+    switch (true) {
+        case event.ctrlKey && event.key === "1":
+            task1();
+            break;
+
+        case event.ctrlKey && event.key === "2":
+            task2();
+            break;
+
+        case event.ctrlKey && event.key === "3":
+            task3();
+            break;
+
+        case event.ctrlKey && event.key === "4":
+            task4();
+            break;
+        default:
+            console.log("Invalid key pressed");
+
+    }
+});
+
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();
